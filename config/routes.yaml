@@ -1,0 +1,19 @@
+send_message:
+    path: /send_message
+    controller: App\Controller\MessageController::createMessages
+
+app_logout:
+    path: /logout
+    methods: GET
+
+app_login:
+    path: /login
+    controller: App\Controller\LoginController::index
+
+fetch_all_sources:
+    path: /fetch_all_sources
+    controller: App\Controller\SourceController::showAll
+
+remove_source:
+    path: /remove_source/{id}
+    controller: App\Controller\SourceController::remove

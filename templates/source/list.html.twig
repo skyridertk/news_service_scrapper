@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello SourceController!{% endblock %}
+
+{% block body %}
+<a href="{{ path('app_logout') }}" class="btn btn-primary">Logout</a>
+
+<div class="row">
+        <div class="col-sm-12">
+            <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Picture</th>
+                    <th>DateAdded</th>
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <th></th>
+                    {% endif %}
+                </tr>
+                </thead>
+                <tbody>
+                {% for source in pagination.getItems() %}
+                <tr>
+                        <td>
+                            {{ source.title }}
+                        </td>
+                        <td>
+                            {{ source.description }}
+                        </td>
+                        <td>
+                            {{ source.picture }}
+                        </td>
+                        <td>
+                            {{ source.dateadded }}
+                        </td>
+                        {% if is_granted('ROLE_ADMIN') %}
+                    <td>
+                            <a href="{{ path('remove_source', { id : source.id }) }}" class="btn btn-primary">Delete</a>
+                        </td>
+                    {% endif %}
+                        
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center">
+                            No sources found
+                        </td>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            {% set _currentPage = app.request.query.get('page') ?: 1 %}
+{% set _currentRoute = app.request.attributes.get('_route') %}
+{% set _lastPage = pagination.lastPage %}
+{% set _currentParams = app.request.query.all|merge(app.request.attributes.get('_route_params')) %}
+
+{% if pagination.lastPage > 1 %}
+    <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item{{ _currentPage <= 1 ? ' disabled' : '' }}">
+                <a class="page-link" href="{{ path(_currentRoute, _currentParams|merge({page: _currentPage - 1})) }}" aria-label="Previous">
+                    Previous
+                </a>
+            </li>
+            {% for i in 1..pagination.lastPage %}
+                <li class="page-item {% if i == _currentPage %}active{% endif %}">
+                    <a class="page-link" href="{{ path(_currentRoute, _currentParams|merge({page: i})) }}">{{ i }}</a>
+                </li>
+            {% endfor %}
+            <li class="page-item {{ _currentPage >= pagination.lastPage ? ' disabled' : '' }}">
+                <a class="page-link" href="{{ path(_currentRoute, _currentParams|merge({page: _currentPage + 1})) }}" aria-label="Next">
+                    Next
+                </a>
+            </li>
+        </ul>
+    </nav>
+{% endif %}
+
+        </div>
+    </div>
+{% endblock %}
+
+
+
